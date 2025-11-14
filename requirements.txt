@@ -1,0 +1,11 @@
+# GloMAP Photogrammetry GUI Requirements
+# Python 3.8 or higher required
+
+# GUI Framework
+customtkinter>=5.2.0
+
+# Optional: PyQt6 (alternative GUI framework)
+# PyQt6>=6.4.0
+
+# Optional: PyCOLMAP (Python bindings for COLMAP)
+# pycolmap>=0.4.0

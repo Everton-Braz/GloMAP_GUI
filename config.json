@@ -1,0 +1,33 @@
+{
+  "application": {
+    "name": "GloMAP Photogrammetry GUI",
+    "version": "1.0.0",
+    "author": "Generated from GLOMAP_GUI_GUIDE"
+  },
+  "paths": {
+    "colmap_path": "C:\\Users\\User\\Documents\\colmap-x64-windows-cuda",
+    "glomap_path": null,
+    "default_project_dir": null
+  },
+  "processing": {
+    "use_gpu": true,
+    "max_features": 8192,
+    "matcher_type": "sequential",
+    "matcher_overlap": 10,
+    "include_dense": false,
+    "dense_window_radius": 5,
+    "min_num_pixels": 3
+  },
+  "ui": {
+    "theme": "dark",
+    "color_theme": "blue",
+    "window_width": 1000,
+    "window_height": 700
+  },
+  "logging": {
+    "enabled": true,
+    "log_level": "INFO",
+    "log_to_file": true,
+    "log_directory": "logs"
+  }
+}
