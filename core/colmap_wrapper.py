@@ -243,14 +243,41 @@ class COLMAPWrapper:
             Tuple of (success, message)
         """
         try:
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-                encoding='utf-8',
-                errors='replace'
-            )
+            # Quote all paths to handle spaces and special characters
+            quoted_cmd = []
+            for arg in cmd:
+                if isinstance(arg, (str, Path)):
+                    arg_str = str(arg)
+                    # Quote if contains spaces or special characters
+                    if ' ' in arg_str or any(c in arg_str for c in ['(', ')', '&']):
+                        quoted_cmd.append(f'"{arg_str}"')
+                    else:
+                        quoted_cmd.append(arg_str)
+                else:
+                    quoted_cmd.append(str(arg))
+            
+            # On Windows, use shell=True to properly handle quoted paths
+            is_windows = os.name == 'nt'
+            if is_windows:
+                cmd_str = ' '.join(quoted_cmd)
+                process = subprocess.Popen(
+                    cmd_str,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    encoding='utf-8',
+                    errors='replace'
+                )
+            else:
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    encoding='utf-8',
+                    errors='replace'
+                )
             
             output_lines = []
             while True:

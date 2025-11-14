@@ -65,21 +65,49 @@ class GloMAPWrapper:
             Tuple of (success, message)
         """
         try:
+            # Quote all paths to handle spaces and special characters
+            quoted_cmd = []
+            for arg in cmd:
+                if isinstance(arg, (str, Path)):
+                    arg_str = str(arg)
+                    # Quote if contains spaces or special characters
+                    if ' ' in arg_str or any(c in arg_str for c in ['(', ')', '&']):
+                        quoted_cmd.append(f'"{arg_str}"')
+                    else:
+                        quoted_cmd.append(arg_str)
+                else:
+                    quoted_cmd.append(str(arg))
+            
             # Set up environment to include conda DLLs
             env = os.environ.copy()
             conda_bin = "C:/Users/User/miniconda3/Library/bin"
             if os.path.exists(conda_bin):
                 env['PATH'] = conda_bin + os.pathsep + env.get('PATH', '')
             
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-                encoding='utf-8',
-                errors='replace',
-                env=env
-            )
+            # On Windows, use shell=True to properly handle quoted paths
+            is_windows = os.name == 'nt'
+            if is_windows:
+                cmd_str = ' '.join(quoted_cmd)
+                process = subprocess.Popen(
+                    cmd_str,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    encoding='utf-8',
+                    errors='replace',
+                    env=env
+                )
+            else:
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    encoding='utf-8',
+                    errors='replace',
+                    env=env
+                )
             
             output_lines = []
             while True:
